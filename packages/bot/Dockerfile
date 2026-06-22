@@ -82,6 +82,15 @@ COPY --chown=grvtbot:grvtbot packages/bot/package.json ./package.json
 COPY --from=dashboard-builder --chown=grvtbot:grvtbot /build/packages/dashboard/dist ./dashboard-dist
 
 # Data dir is a bind-mount target for the SQLite db + WAL files
+# Rebuild sqlite3's native binding from source inside this exact runtime
+# image, instead of trusting prebuild-install's precompiled binary (which
+# can be linked against a newer glibc than this base image ships).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential python3 \
+    && npm rebuild sqlite3 --build-from-source \
+    && apt-get purge -y build-essential python3 \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app/data && chown grvtbot:grvtbot /app/data
 VOLUME /app/data
 
