@@ -91,6 +91,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get purge -y build-essential python3 \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
+# Generate the AES-256-GCM master key used to encrypt GRVT credentials.
+# A named Docker volume at /etc/grvt-grid preserves it across rebuilds.
+RUN mkdir -p /etc/grvt-grid && \
+    head -c 32 /dev/urandom > /etc/grvt-grid/master.key && \
+    chmod 600 /etc/grvt-grid/master.key && \
+    chown -R grvtbot:grvtbot /etc/grvt-grid
 RUN mkdir -p /app/data && chown grvtbot:grvtbot /app/data
 VOLUME /app/data
 
