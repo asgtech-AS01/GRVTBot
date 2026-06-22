@@ -39,6 +39,7 @@ services:
     volumes:
       - bot-data:/app/data
       - bot-logs:/app/logs
+      - master-key:/etc/grvt-grid
     ports:
       # Direct port for `--profile no-tls` deployments. With caddy, you can
       # remove this binding so only caddy is reachable from the internet.
@@ -101,6 +102,7 @@ services:
 volumes:
   bot-data:
   bot-logs:
+  master-key:
   notifier-state:
   notifier-logs:
   caddy-data:
