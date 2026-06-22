@@ -36,9 +36,9 @@ services:
       NODE_ENV: production
       DASHBOARD_PORT: "3848"
       LOG_LEVEL: "${LOG_LEVEL:-info}"
-    volumes:
-      - ./data:/app/data
-      - ./logs/bot:/app/logs
+volumes:
+      - bot-data:/app/data
+      - bot-logs:/app/logs
     ports:
       # Direct port for `--profile no-tls` deployments. With caddy, you can
       # remove this binding so only caddy is reachable from the internet.
@@ -68,9 +68,9 @@ services:
       NOTIFIER_HEALTH_PORT: "3849"
     volumes:
       # READ-ONLY mount of the bot's data dir — defense in depth.
-      - ./data:/shared-data:ro
+      - bot-data:/shared-data:ro
       - notifier-state:/var/lib/grvt-grid-notifier
-      - ./logs/notifier:/app/logs
+      - notifier-logs:/app/logs
     depends_on:
       bot:
         condition: service_started
@@ -99,6 +99,9 @@ services:
     profiles: ["full", "with-tls"]
 
 volumes:
+  bot-data:
+  bot-logs:
   notifier-state:
+  notifier-logs:
   caddy-data:
   caddy-config:
